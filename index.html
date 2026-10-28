@@ -1,0 +1,776 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Colegio Montano - Interactive Digital Whiteboard: Grammar I & II (Unit 5)</title>
+    <style>
+        :root {
+            --primary-blue: #1269A8;
+            --accent-yellow: #F7D615;
+            --gray-green: #54887D;
+            --light-blue: #88B5C7;
+            --olive-green: #A6B046;
+            --soft-white: #F2F5E9;
+            --text-dark: #2C3E50;
+            --card-bg: #FFFFFF;
+        }
+
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
+
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            background-color: #E9EDE0;
+            color: var(--text-dark);
+            padding: 20px;
+        }
+
+        /* Whiteboard Frame */
+        .whiteboard-frame {
+            background-color: var(--soft-white);
+            border: 6px solid var(--accent-yellow);
+            border-radius: 12px;
+            box-shadow: 0 10px 30px rgba(0, 0, 0, 0.15);
+            max-width: 1200px;
+            margin: 0 auto;
+            overflow: hidden;
+            display: flex;
+            flex-direction: column;
+            min-height: 85vh;
+        }
+
+        /* Header Bar */
+        .whiteboard-header {
+            background-color: var(--primary-blue);
+            color: white;
+            padding: 15px 25px;
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            border-bottom: 4px solid var(--accent-yellow);
+        }
+
+        .header-left {
+            display: flex;
+            align-items: center;
+            gap: 15px;
+        }
+
+        .school-logo {
+            width: 55px;
+            height: 55px;
+            border-radius: 50%;
+            object-fit: cover;
+            border: 2px solid var(--accent-yellow);
+            background: white;
+        }
+
+        .header-titles h1 {
+            font-size: 1.4rem;
+            font-weight: bold;
+        }
+
+        .header-titles p {
+            font-size: 0.9rem;
+            opacity: 0.9;
+        }
+
+        .fullscreen-btn {
+            background-color: var(--accent-yellow);
+            color: var(--text-dark);
+            border: none;
+            padding: 8px 16px;
+            font-weight: bold;
+            border-radius: 8px;
+            cursor: pointer;
+            transition: background 0.2s, transform 0.1s;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+        }
+
+        .fullscreen-btn:hover {
+            background-color: #e5c40e;
+            transform: scale(1.03);
+        }
+
+        /* Horizontal Navigation Tabs */
+        .nav-tabs {
+            display: flex;
+            background-color: var(--gray-green);
+            overflow-x: auto;
+            border-bottom: 3px solid var(--olive-green);
+        }
+
+        .tab-btn {
+            background: none;
+            border: none;
+            color: white;
+            padding: 14px 20px;
+            font-size: 0.95rem;
+            font-weight: bold;
+            cursor: pointer;
+            flex: 1;
+            text-align: center;
+            transition: background 0.3s, color 0.3s;
+            white-space: nowrap;
+            border-right: 1px solid rgba(255,255,255,0.2);
+        }
+
+        .tab-btn:hover {
+            background-color: rgba(255, 255, 255, 0.15);
+        }
+
+        .tab-btn.active {
+            background-color: var(--soft-white);
+            color: var(--primary-blue);
+            border-bottom: 4px solid var(--primary-blue);
+        }
+
+        /* Content Area */
+        .whiteboard-content {
+            padding: 30px;
+            flex: 1;
+            overflow-y: auto;
+            max-height: 70vh;
+        }
+
+        .tab-pane {
+            display: none;
+        }
+
+        .tab-pane.active {
+            display: block;
+            animation: fadeIn 0.4s ease-in-out;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(5px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* Section Typography & Cards */
+        h2 {
+            color: var(--primary-blue);
+            margin-bottom: 15px;
+            font-size: 1.6rem;
+            border-bottom: 2px solid var(--light-blue);
+            padding-bottom: 8px;
+        }
+
+        h3 {
+            color: var(--gray-green);
+            margin: 20px 0 10px 0;
+            font-size: 1.2rem;
+        }
+
+        p, li {
+            font-size: 1.05rem;
+            line-height: 1.6;
+            margin-bottom: 10px;
+        }
+
+        ul {
+            margin-left: 20px;
+        }
+
+        .card {
+            background-color: var(--card-bg);
+            border-left: 6px solid var(--light-blue);
+            padding: 20px;
+            border-radius: 8px;
+            margin-bottom: 20px;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+            border: 1px solid rgba(0,0,0,0.08);
+        }
+
+        .badge {
+            display: inline-block;
+            background-color: var(--olive-green);
+            color: white;
+            padding: 4px 10px;
+            font-size: 0.85rem;
+            font-weight: bold;
+            border-radius: 6px;
+            margin-bottom: 10px;
+        }
+
+        /* Tables for Grammar Charts */
+        .grammar-table {
+            width: 100%;
+            border-collapse: collapse;
+            margin: 15px 0;
+            background: white;
+            border-radius: 8px;
+            overflow: hidden;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .grammar-table th, .grammar-table td {
+            border: 1px solid #d1d8cc;
+            padding: 12px;
+            text-align: center;
+        }
+
+        .grammar-table th {
+            background-color: var(--primary-blue);
+            color: white;
+        }
+
+        .grammar-table td {
+            background-color: #f9fbf7;
+        }
+
+        /* Interactive Solution Collapsibles */
+        .solution-container {
+            margin-top: 12px;
+        }
+
+        .solution-btn {
+            background-color: var(--primary-blue);
+            color: white;
+            border: none;
+            padding: 6px 14px;
+            font-size: 0.9rem;
+            border-radius: 5px;
+            cursor: pointer;
+            font-weight: bold;
+            transition: background 0.2s;
+        }
+
+        .solution-btn:hover {
+            background-color: #0e5384;
+        }
+
+        .solution-content {
+            display: none;
+            background-color: #eaf2f6;
+            border-left: 4px solid var(--primary-blue);
+            padding: 12px;
+            margin-top: 8px;
+            border-radius: 0 6px 6px 0;
+            font-size: 0.95rem;
+        }
+
+        .solution-content.show {
+            display: block;
+        }
+
+        /* Footer Info */
+        .whiteboard-footer {
+            background-color: #dbe2d0;
+            padding: 10px 25px;
+            text-align: right;
+            font-size: 0.85rem;
+            color: #4a5c52;
+            border-top: 1px solid #c8d0be;
+        }
+    </style>
+</head>
+<body>
+
+<div class="whiteboard-frame" id="whiteboardFrame">
+    <!-- Header -->
+    <div class="whiteboard-header">
+        <div class="header-left">
+            <img src="https://encrypted-tbn0.gstatic.com/images?q=tbn:ANd9GcQyEop0yf6lZ7Jk9MILZxF1rBj4Oqs5esyhIQ&s" alt="Colegio Montano Logo" class="school-logo">
+            <div class="header-titles">
+                <h1>Colegio Montano — Digital Whiteboard</h1>
+                <p>1st Grade Primary | Unit 5: Grammar I & II (Our World 1)</p>
+            </div>
+        </div>
+        <button class="fullscreen-btn" onclick="toggleFullscreen()">[ ⛶ Fullscreen ]</button>
+    </div>
+
+    <!-- Navigation Tabs -->
+    <div class="nav-tabs">
+        <button class="tab-btn active" onclick="switchTab(event, 'theory')">1. Theory</button>
+        <button class="tab-btn" onclick="switchTab(event, 'examples')">2. Solved Examples</button>
+        <button class="tab-btn" onclick="switchTab(event, 'exercises')">3. Practice Exercises</button>
+        <button class="tab-btn" onclick="switchTab(event, 'reflection')">4. Reflection</button>
+        <button class="tab-btn" onclick="switchTab(event, 'evaluation')">5. Evaluation</button>
+    </div>
+
+    <!-- Content Body -->
+    <div class="whiteboard-content">
+
+        <!-- TAB 1: THEORY -->
+        <div id="theory" class="tab-pane active">
+            <h2>Interactive Grammar Theory: Unit 5 (Our World 1)</h2>
+            
+            <div class="card">
+                <span class="badge">Grammar I</span>
+                <h3>Present Progressive: am / are / is + verb-ing</h3>
+                <p>We use the present progressive to talk about what people are wearing right now.</p>
+                
+                <table class="grammar-table">
+                    <tr>
+                        <th colspan="4">Question</th>
+                        <th colspan="2">Answer</th>
+                        <th>Notes</th>
+                    </tr>
+                    <tr>
+                        <td>What</td>
+                        <td><strong>are</strong><br><strong>is</strong></td>
+                        <td>you<br>your brother / the girl</td>
+                        <td>wearing?</td>
+                        <td>I'm<br>He's / She's</td>
+                        <td>wearing white shoes / a hat</td>
+                        <td>I'm = I am<br>He's = He is<br>She's = She is</td>
+                    </tr>
+                </table>
+            </div>
+
+            <div class="card">
+                <span class="badge">Grammar II</span>
+                <h3>Demonstrative Pronouns: that and those</h3>
+                <p>We use <strong>that</strong> for singular items far away, and <strong>those</strong> for plural items far away.</p>
+                
+                <table class="grammar-table">
+                    <tr>
+                        <th colspan="2">Question</th>
+                        <th colspan="2">Answer</th>
+                        <th>Notes</th>
+                    </tr>
+                    <tr>
+                        <td>What's<br>What are</td>
+                        <td><strong>that?</strong><br><strong>those?</strong></td>
+                        <td>That's<br>Those are</td>
+                        <td>my pink hat.<br>my brown pants.</td>
+                        <td>What's = What is<br>That's = That is</td>
+                    </tr>
+                </table>
+            </div>
+        </div>
+
+        <!-- TAB 2: SOLVED EXAMPLES -->
+        <div id="examples" class="tab-pane">
+            <h2>Solved Examples (Basic, Intermediate, Advanced)</h2>
+
+            <!-- Basic Examples -->
+            <h3>Basic Level</h3>
+            <div class="card">
+                <span class="badge">Basic - Example 1</span>
+                <p><strong>Question:</strong> What are you wearing? I'm wearing a ______ (skirt / hat).</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Solution:</strong> skirt. Complete sentence: "I'm wearing a skirt."</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Basic - Example 2</span>
+                <p><strong>Question:</strong> What are you wearing? I'm wearing ______ jacket.</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Solution:</strong> a. Complete sentence: "I'm wearing a jacket."</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Basic - Example 3</span>
+                <p><strong>Question:</strong> What are you wearing? I'm wearing a T-______.</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Solution:</strong> shirt. Complete sentence: "I'm wearing a T-shirt."</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Basic - Example 4</span>
+                <p><strong>Question:</strong> What is that? ______ my pink hat.</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Solution:</strong> That's. Complete sentence: "That's my pink hat."</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Basic - Example 5</span>
+                <p><strong>Question:</strong> What are those? Those ______ my brown pants.</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Solution:</strong> are. Complete sentence: "Those are my brown pants."</div>
+                </div>
+            </div>
+
+            <!-- Intermediate Examples -->
+            <h3>Intermediate Level</h3>
+            <div class="card">
+                <span class="badge">Intermediate - Example 6</span>
+                <p><strong>Question:</strong> What is your brother wearing? My brother ______ wearing pants.</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Solution:</strong> is. Complete sentence: "My brother is wearing pants."</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Intermediate - Example 7</span>
+                <p><strong>Question:</strong> Form the question for a dress: What ______ that?</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Solution:</strong> 's (What's that?). Answer: "That's my dress."</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Intermediate - Example 8</span>
+                <p><strong>Question:</strong> Form the question for socks: What ______ those?</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Solution:</strong> are (What are those?). Answer: "Those are my socks."</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Intermediate - Example 9</span>
+                <p><strong>Question:</strong> Fill in pronoun and verb: ______ wearing a red shirt (referring to a girl).</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Solution:</strong> She's (She is). Complete sentence: "She's wearing a red shirt."</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Intermediate - Example 10</span>
+                <p><strong>Question:</strong> Fill in pronoun and verb: ______ wearing blue shoes (referring to a boy).</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Solution:</strong> He's (He is). Complete sentence: "He's wearing blue shoes."</div>
+                </div>
+            </div>
+
+            <!-- Advanced Examples -->
+            <h3>Advanced Level</h3>
+            <div class="card">
+                <span class="badge">Advanced - Example 11</span>
+                <p><strong>Question:</strong> Complete dialogue:<br>— What ______ your sister wearing?<br>— ______ wearing a yellow dress and white shoes.</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Solution:</strong> is / She's. Full dialogue: "What is your sister wearing? She's wearing a yellow dress and white shoes."</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Advanced - Example 12</span>
+                <p><strong>Question:</strong> Correct the error: "What is those? That are my gloves."</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Solution:</strong> "What are those? Those are my gloves." (Match plural demonstrative 'those' with 'are').</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Advanced - Example 13</span>
+                <p><strong>Question:</strong> Expand contractions: "What's that? That's my shirt."</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Solution:</strong> "What is that? That is my shirt."</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Advanced - Example 14</span>
+                <p><strong>Question:</strong> Pointing at a distant picture of your brother wearing a jacket. Ask and answer using 'that'.</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Solution:</strong> "What's that? That's my brother wearing a jacket."</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Advanced - Example 15</span>
+                <p><strong>Question:</strong> Complete complex sentence: "My mother ______ (wear) a green skirt and my father ______ (wear) brown pants."</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Solution:</strong> is wearing / is wearing. Full sentence: "My mother is wearing a green skirt and my father is wearing brown pants."</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 3: PRACTICE EXERCISES -->
+        <div id="exercises" class="tab-pane">
+            <h2>Practice Exercises (Basic, Intermediate, Advanced)</h2>
+
+            <!-- Basic Exercises -->
+            <h3>Basic Level</h3>
+            <div class="card">
+                <span class="badge">Exercise 1 (Basic)</span>
+                <p>Complete: What ______ you wearing? (are / is)</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Answer:</strong> are. ("What are you wearing?")</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Exercise 2 (Basic)</span>
+                <p>Complete: I'm wearing ______ skirt. (a / an)</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Answer:</strong> a. ("I'm wearing a skirt.")</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Exercise 3 (Basic)</span>
+                <p>Complete: What's ______? (that / those)</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Answer:</strong> that. ("What's that?")</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Exercise 4 (Basic)</span>
+                <p>Complete: That's ______ pink hat. (my / I)</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Answer:</strong> my. ("That's my pink hat.")</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Exercise 5 (Basic)</span>
+                <p>Complete: Those ______ my socks. (is / are)</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Answer:</strong> are. ("Those are my socks.")</div>
+                </div>
+            </div>
+
+            <!-- Intermediate Exercises -->
+            <h3>Intermediate Level</h3>
+            <div class="card">
+                <span class="badge">Exercise 6 (Intermediate)</span>
+                <p>Write the missing word: What ______ your brother wearing?</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Answer:</strong> is. ("What is your brother wearing?")</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Exercise 7 (Intermediate)</span>
+                <p>Write the missing word: ______ are those? — Those are my brown pants.</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Answer:</strong> What. ("What are those?")</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Exercise 8 (Intermediate)</span>
+                <p>Unscramble: wearing / I'm / jacket / a</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Answer:</strong> I'm wearing a jacket.</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Exercise 9 (Intermediate)</span>
+                <p>Complete with pronoun contraction: He is -> ______ wearing my blue shirt.</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Answer:</strong> He's. ("He's wearing my blue shirt.")</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Exercise 10 (Intermediate)</span>
+                <p>Complete: What are ______? — Those are my gloves.</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Answer:</strong> those. ("What are those?")</div>
+                </div>
+            </div>
+
+            <!-- Advanced Exercises -->
+            <h3>Advanced Level</h3>
+            <div class="card">
+                <span class="badge">Exercise 11 (Advanced)</span>
+                <p>Translate/Construct: ¿Qué lleva puesto tu hermano? — Él lleva una chaqueta.</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Answer:</strong> What is your brother wearing? — He's wearing a jacket.</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Exercise 12 (Advanced)</span>
+                <p>Complete conversation:<br>— What's ______?<br>— That's my dress.</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Answer:</strong> that. ("What's that? That's my dress.")</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Exercise 13 (Advanced)</span>
+                <p>Fix grammar mistake: "What are that? That's my shoes."</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Answer:</strong> "What are those? Those are my shoes."</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Exercise 14 (Advanced)</span>
+                <p>Fill in both blanks: "What ______ the girl wearing? — She ______ wearing white shoes."</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Answer:</strong> is / 's. ("What is the girl wearing? — She's wearing white shoes.")</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Exercise 15 (Advanced)</span>
+                <p>Write an original question and answer using <strong>those</strong> for winter gloves.</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Answer example:</strong> "What are those? — Those are my winter gloves."</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 4: CRITICAL REFLECTION -->
+        <div id="reflection" class="tab-pane">
+            <h2>Critical Reflection Questions</h2>
+            <div class="card">
+                <span class="badge">Reflection 1</span>
+                <p><strong>Question:</strong> Why do we use <em>"is"</em> with "your brother" or "the girl", but <em>"are"</em> with "you"?</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution / Hint</button>
+                    <div class="solution-content"><strong>Answer:</strong> Subject-verb agreement rules. "You" takes the verb <em>are</em>, while third-person singular subjects take <em>is</em>.</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Reflection 2</span>
+                <p><strong>Question:</strong> What is the difference between pointing at a single hat far away ("that") versus multiple socks far away ("those")?</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution / Hint</button>
+                    <div class="solution-content"><strong>Answer:</strong> "That" is singular, whereas "those" is plural. The verb changes from <em>is</em> to <em>are</em> accordingly.</div>
+                </div>
+            </div>
+            <div class="card">
+                <span class="badge">Reflection 3</span>
+                <p><strong>Question:</strong> How does adding "-ing" to action verbs (like <em>wear -> wearing</em>) help us describe live actions happening right now?</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution / Hint</button>
+                    <div class="solution-content"><strong>Answer:</strong> The suffix "-ing" turns an action into an ongoing process happening at the current moment.</div>
+                </div>
+            </div>
+        </div>
+
+        <!-- TAB 5: FORMATIVE QUIZ -->
+        <div id="evaluation" class="tab-pane">
+            <h2>Formative Quiz with Hidden Solutions</h2>
+
+            <div class="card">
+                <span class="badge">Question 1</span>
+                <p>Choose the correct form: "What ______ you wearing?"</p>
+                <ul>
+                    <li>A) is</li>
+                    <li>B) are</li>
+                    <li>C) am</li>
+                </ul>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Correct Answer:</strong> B) are ("What are you wearing?")</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="badge">Question 2</span>
+                <p>Choose the correct pronoun: "______ is my pink hat." (Pointing to one hat far away)</p>
+                <ul>
+                    <li>A) That</li>
+                    <li>B) Those</li>
+                    <li>C) You</li>
+                </ul>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Correct Answer:</strong> A) That ("That is my pink hat.")</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="badge">Question 3</span>
+                <p>Complete the sentence: "My brother ______ wearing brown pants."</p>
+                <ul>
+                    <li>A) am</li>
+                    <li>B) are</li>
+                    <li>C) is</li>
+                </ul>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Correct Answer:</strong> C) is ("My brother is wearing brown pants.")</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="badge">Question 4</span>
+                <p>Select the correct plural question for boots far away:</p>
+                <ul>
+                    <li>A) What's that?</li>
+                    <li>B) What are those?</li>
+                    <li>C) What are you wearing?</li>
+                </ul>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Correct Answer:</strong> B) What are those?</div>
+                </div>
+            </div>
+
+            <div class="card">
+                <span class="badge">Question 5</span>
+                <p>True or False: "I'm" is the short form (contraction) for "I am".</p>
+                <div class="solution-container">
+                    <button class="solution-btn" onclick="toggleSolution(this)">Show Solution</button>
+                    <div class="solution-content"><strong>Correct Answer:</strong> True ("I'm = I am").</div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+
+    <!-- Footer -->
+    <div class="whiteboard-footer">
+        Colegio Montano &bull; Interactive Educational Technology &bull; Canvas LMS Ready
+    </div>
+</div>
+
+<script>
+    // Tab Switching Logic
+    function switchTab(evt, tabId) {
+        const panes = document.getElementsByClassName('tab-pane');
+        for (let p of panes) {
+            p.classList.remove('active');
+        }
+
+        const buttons = document.getElementsByClassName('tab-btn');
+        for (let b of buttons) {
+            b.classList.remove('active');
+        }
+
+        document.getElementById(tabId).classList.add('active');
+        evt.currentTarget.classList.add('active');
+    }
+
+    // Toggle Solution Visibility
+    function toggleSolution(button) {
+        const solutionDiv = button.nextElementSibling;
+        if (solutionDiv.classList.contains('show')) {
+            solutionDiv.classList.remove('show');
+            button.textContent = "Show Solution";
+        } else {
+            solutionDiv.classList.add('show');
+            button.textContent = "Hide Solution";
+        }
+    }
+
+    // Fullscreen Toggle API
+    function toggleFullscreen() {
+        const frame = document.getElementById('whiteboardFrame');
+        if (!document.fullscreenElement) {
+            if (frame.requestFullscreen) {
+                frame.requestFullscreen();
+            } else if (frame.webkitRequestFullscreen) {
+                frame.webkitRequestFullscreen();
+            } else if (frame.msRequestFullscreen) {
+                frame.msRequestFullscreen();
+            }
+        } else {
+            if (document.exitFullscreen) {
+                document.exitFullscreen();
+            } else if (document.webkitExitFullscreen) {
+                document.webkitExitFullscreen();
+            } else if (document.msExitFullscreen) {
+                document.msExitFullscreen();
+            }
+        }
+    }
+</script>
+
+</body>
+</html>
